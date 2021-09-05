@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-float convert(float fahr){
+float convert(float fahr){//funcion that converts from fahr to cel
 	float cel;
 	
 	cel = (5.0 / 9.0) * (fahr - 32);	
