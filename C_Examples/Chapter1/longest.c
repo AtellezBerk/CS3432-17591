@@ -13,7 +13,7 @@ int main()
     char longest[MAXLINE]; /* longest line saved here */
 
     max = 0;
-    while ((len = getaline(line, MAXLINE)) > 1) //changed 0 to 1 otherwise code never ends
+    while ((len = getaline(line, MAXLINE)) > 0) 
 	//pintf("Length is %i\n", len); //code goes on forver so I had to figure out why that is
         if (len > max) {
 	    max = len;
