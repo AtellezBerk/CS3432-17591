@@ -100,16 +100,36 @@ int count_tokens(char* str){
 */
 
 char *copy_str(char *inStr, short len){
+	char* word = (char*) malloc(len * sizeof(char));
+	for(int i = 0; i < len; i++){
+		word[i] = *inStr;
+		i++;
+		*inStr++;
+	}
 	
-
-
+	return word;
 }
 
 
 
-char** tokenize(char* str){
-		
-
+char** tokenize(char* str){	
+	int i = 0;
+	int len = 0;
+	char** result;
+	char** temp = result;
+	char* word = str;
+	while(str[i] != '\0'){
+		if(delim_character(str[i])){
+			&temp = *copy_str(word, len);
+			temp++;
+			i++;
+			word = str[i];
+			len = 0;	
+		}
+		len++;
+		i++;
+	}	
+	return result;
 }
 
 
@@ -117,34 +137,30 @@ char** tokenize(char* str){
 
 
 void print_all_tokens(char** tokens){
+	int i = 0;
+	while (tokens != NULL){
+		printf("Token[%d] = %s", i, tokens);
+		i++;
+		tokens++;
+	}
 
 }
 
 int main(){
 	printf("Please enter string: ");
-	char word[1000];
+	//char word[1000];
 	
-	//Testing first two functions
-	/*char blank = '\t';
-	char blank2 = ' ';
-	printf("%i\n", non_delim_character(blank));//1 true 0 false
-	printf("%i\n", non_delim_character(blank2));
-	*/
+	int str_size = 100;
+	char* new_string = (char*) malloc(str_size * sizeof(char)); 		
+
+	scanf("%99[^\n]", new_string);
+	printf("\n%s\n", new_string);
 	
-	scanf("%999[^\n]", &word);
-	printf("\n%s\n", word);
-	
-	//*word_start test
-	/*char* start = word;
-	char place = *word_start(start);	
-	printf("%c\n", place);
-	*/
-	char* end = word;
-	char place = *end_word(end);
-	//char* place1 = place+1;
-	
-	printf("%p Space\n", place);
-	
+	tokenize(new_string);
+
+
+		
+
 	return 0;	
 }
 
