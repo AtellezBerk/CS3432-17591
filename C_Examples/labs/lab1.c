@@ -41,10 +41,16 @@ bool non_delim_character(char c){
    space-separated word*/
 
 char *word_start(char* str){
-	while(str != NULL && *str != ' '){
-		str++;
+	
+	if(*str == ' '){ //make sure that the character the string is on isn't a space
+		*str++;
 	}
-	str++;
+	while(*str != '\0' && *str != ' '){ //checks for end or space
+		*str++;
+	}
+	if(*str != '\0'){
+		*str++;
+	}
 	return str;
 
 }
@@ -56,8 +62,8 @@ char *word_start(char* str){
 terminated string*/
 
 char *end_word(char* str){
-	while(str != NULL && *str != ' '){
-		str++;
+	while(*str != '\0' && *str != ' '){
+		*str++;
 	}
 	return str;
 
@@ -68,12 +74,12 @@ char *end_word(char* str){
 
 int count_tokens(char* str){
 	int counter = 0;
-	if(str == NULL)
+	if(*str == '\0')
 		return 0;
 	counter++;
-	for(str; str != NULL; str++){
+	for(*str; *str != '\0'; *str++){
 		if(*str == ' ' || *str == '\t'){
-			if(str+1 != NULL){
+			if(*str+1 != '\0'){
 				counter++;
 			}
 		}			
@@ -103,7 +109,6 @@ char *copy_str(char *inStr, short len){
 	char* word = (char*) malloc(len * sizeof(char));
 	for(int i = 0; i < len; i++){
 		word[i] = *inStr;
-		i++;
 		*inStr++;
 	}
 	
@@ -113,53 +118,50 @@ char *copy_str(char *inStr, short len){
 
 
 char** tokenize(char* str){	
-	int i = 0;
-	int len = 0;
-	char** result;
-	char** temp = result;
-	char* word = str;
-	while(str[i] != '\0'){
-		if(delim_character(str[i])){
-			&temp = *copy_str(word, len);
-			temp++;
-			i++;
-			word = str[i];
-			len = 0;	
-		}
-		len++;
-		i++;
-	}	
-	return result;
+	int len = count_tokens(str);
+	char** tokens = (char**) malloc(len * sizeof(char));
+	char* start = str;
+	//printf("Hello, &c\n", &start);
+	char* end = end_word(start);
+
+	for(int i = 0; i < len; i++){
+		printf("End - start: %d\n", end - start);
+		tokens[i] = copy_str(start, end-start);
+		start = word_start(end);
+		end = end_word(start);
+		
+	}
+	
+
+	return tokens;
 }
 
 
 
 
 
-void print_all_tokens(char** tokens){
-	int i = 0;
-	while (tokens != NULL){
-		printf("Token[%d] = %s", i, tokens);
-		i++;
-		tokens++;
+void print_all_tokens(char** tokens, int len){
+	for(int i = 0; i < len; i++){
+		printf("Token[%d] = %s\n", i, tokens[i]);
 	}
 
 }
 
 int main(){
 	printf("Please enter string: ");
-	//char word[1000];
 	
 	int str_size = 100;
 	char* new_string = (char*) malloc(str_size * sizeof(char)); 		
 
 	scanf("%99[^\n]", new_string);
-	printf("\n%s\n", new_string);
+	//printf("\n%s\n", new_string);
 	
-	tokenize(new_string);
-
-
-		
+	char** tokens = tokenize(new_string);
+	int len = count_tokens(new_string);
+	print_all_tokens(tokens, len);
+	
+	//char* end = end_word(new_string);
+	//printf("start: %d, end: %d, subtract: %d", new_string, end, end - new_string);
 
 	return 0;	
 }
