@@ -42,9 +42,6 @@ bool non_delim_character(char c){
 
 char *word_start(char* str){
 	
-	if(*str == ' '){ //make sure that the character the string is on isn't a space
-		*str++;
-	}
 	while(*str != '\0' && *str != ' '){ //checks for end or space
 		*str++;
 	}
@@ -106,12 +103,12 @@ int count_tokens(char* str){
 */
 
 char *copy_str(char *inStr, short len){
-	char* word = (char*) malloc(len * sizeof(char));
+	char* word = (char*) malloc(len * sizeof(char*));
 	for(int i = 0; i < len; i++){
 		word[i] = *inStr;
 		*inStr++;
 	}
-	
+	//printf("Word: %s\n", word);
 	return word;
 }
 
@@ -119,13 +116,13 @@ char *copy_str(char *inStr, short len){
 
 char** tokenize(char* str){	
 	int len = count_tokens(str);
-	char** tokens = (char**) malloc(len * sizeof(char));
+	char** tokens = (char**) malloc(len * sizeof(char*));
 	char* start = str;
-	//printf("Hello, &c\n", &start);
+	
 	char* end = end_word(start);
 
 	for(int i = 0; i < len; i++){
-		printf("End - start: %d\n", end - start);
+		
 		tokens[i] = copy_str(start, end-start);
 		start = word_start(end);
 		end = end_word(start);
@@ -160,8 +157,6 @@ int main(){
 	int len = count_tokens(new_string);
 	print_all_tokens(tokens, len);
 	
-	//char* end = end_word(new_string);
-	//printf("start: %d, end: %d, subtract: %d", new_string, end, end - new_string);
 
 	return 0;	
 }
