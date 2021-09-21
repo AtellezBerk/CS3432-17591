@@ -42,7 +42,7 @@ bool non_delim_character(char c){
 
 char *word_start(char* str){
 	
-	while(*str != '\0' && *str != ' '){ //checks for end or space
+	while(*str != '\0' && non_delim_character(*str)){ //checks for end or space
 		*str++;
 	}
 	if(*str != '\0'){
@@ -59,7 +59,7 @@ char *word_start(char* str){
 terminated string*/
 
 char *end_word(char* str){
-	while(*str != '\0' && *str != ' '){
+	while(*str != '\0' && non_delim_character(*str)){
 		*str++;
 	}
 	return str;
@@ -75,7 +75,7 @@ int count_tokens(char* str){
 		return 0;
 	counter++;
 	for(*str; *str != '\0'; *str++){
-		if(*str == ' ' || *str == '\t'){
+		if(delim_character(*str)){
 			if(*str+1 != '\0'){
 				counter++;
 			}
