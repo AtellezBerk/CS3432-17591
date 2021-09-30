@@ -127,13 +127,32 @@ int main(){
 
 	// Below is a sample program to a write-read. Overwrite this with your own code.
 
-	write_read_demo();
+	//write_read_demo();
 	
+	printf("Input riscv commands separated by a space, end with EOF (ctr + Z)\n");
+	
+	char input[100];
+		
 
+	//FILE *fp;
+
+	//fp=fopen("new.txt","w");
+
+	while(fgets(input, 100, stdin) != NULL){
+		printf("lol\n");
+	}
+
+	
+	printf("Enough for today\n");
 
 
 	return 0;
 
 }
+
+
+
+
+
 
 
