@@ -22,6 +22,10 @@ bool interpret(char* instr);
 
 void write_read_demo();
 
+bool compare(char* str1, char* str2);
+
+int get_length(char* str);
+
 
 
 /**
@@ -63,12 +67,56 @@ void init_regs(){
  */
 
 bool interpret(char* instr){
+	//printf("hello, %s\n", instr);
+	char** tokens = tokenize(instr);
+	//int len = count_tokens(instr);
+	//print_all_tokens(tokens, len);
+	if(compare(tokens[0], "LW")){
+		return true;
+	}
+	/*else if(compare(tokens[0], "SW")){
+		return true;
 
+	}
+	else if(compare(tokens[0], "ADD")){
+		return true;
+	}
+	else if(compare(tokens[0], "ADDI")){
+		return true;
+	}*/
+	
+	
+	return false;
+
+}
+
+bool compare(char* str1, char* str2){
+	int len1 = get_length(str1);
+	int len2 = get_length(str2);
+	//printf("length work?\n");
+	if(len1 != len2){
+		return false;
+	}
+	printf("Length 1: %d, length 2: %d\n", len1, len2);
+
+	for (int i = 0; i < len1; i++){
+		if (str1[i] != str2[i]){
+			return false;
+		}
+	}
 	return true;
 
 }
 
+int get_length(char* str){
+	int count = 0;
+	while(str != '\0'){
+		count+=1;
+		*str+=1;
+	}
+	return count;
 
+}
 
 
 /**
@@ -129,21 +177,20 @@ int main(){
 
 	//write_read_demo();
 	
-	printf("Input riscv commands separated by a space, end with EOF (ctr + Z)\n");
+	printf("Input text into input.txt and separate words by spaces\n");
 	
-	char input[100];
-		
-
-	//FILE *fp;
-
-	//fp=fopen("new.txt","w");
-
+	//char input[100];
+	char* input = (char*) malloc(100 * sizeof(char));
+	//fgets(input, 100, stdin)
+	//scanf("%99[^\n]", input)
 	while(fgets(input, 100, stdin) != NULL){
-		printf("lol\n");
+		if(interpret(input)){
+			printf("Valid\n");
+		}
 	}
 
 	
-	printf("Enough for today\n");
+	printf("Print Something\n");
 
 
 	return 0;

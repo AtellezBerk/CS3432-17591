@@ -1,22 +1,12 @@
 #include <stdio.h>
-
-
-
 #include <stdlib.h>
-
-
-
 #include <stdbool.h>
-
-
 
 /* Return true (non-zero) if c is a whitespace characer
 
    ('\t' or ' ').
 
    Zero terminators are not printable (therefore false) */
-
-
 
 bool delim_character(char c){
 
@@ -28,15 +18,7 @@ bool delim_character(char c){
 
 	return false;
 
-
-
 }
-
-
-
-
-
-
 
 /* Return true (non-zero) if c is a non-whitespace
 
@@ -55,17 +37,7 @@ bool non_delim_character(char c){
 	}
 
 	return false;
-
-
-
 }
-
-
-
-
-
-
-
 /* Returns a pointer to the first character of the next
 
    space-separated word*/
@@ -93,13 +65,6 @@ char *word_start(char* str){
 
 
 }
-
-
-
-
-
-
-
 /* Returns a pointer to the first space character of the zero
 
 terminated string*/
@@ -113,6 +78,12 @@ char *end_word(char* str){
 		*str++;
 
 	}
+
+	return str;
+
+
+
+
 
 }
 
@@ -153,27 +124,6 @@ int count_tokens(char* str){
 
 
 }
-
-
-
-/* Returns a freshly allocated zero-terminated vector of freshly allocated
-
-   space-separated tokens from zero-terminated str.
-
-   For example, tokenize("hello world string") would result in:
-
-     tokens[0] = "hello"
-
-     tokens[1] = "world"
-
-     tokens[2] = "string"
-
-     tokens[3] = 0
-
-*/
-
-
-
 char *copy_str(char *inStr, short len){
 
 	char* word = (char*) malloc(len * sizeof(char*));
@@ -213,6 +163,9 @@ char** tokenize(char* str){
 
 
 	for(int i = 0; i < len; i++){
+
+		
+
 		tokens[i] = copy_str(start, end-start);
 
 		start = word_start(end);
@@ -230,17 +183,6 @@ char** tokenize(char* str){
 	return tokens;
 
 }
-
-
-
-
-
-
-
-
-
-
-
 void print_all_tokens(char** tokens, int len){
 
 	for(int i = 0; i < len; i++){
@@ -252,39 +194,4 @@ void print_all_tokens(char** tokens, int len){
 
 
 }
-
-
-
-/*int main(){
-
-	printf("Please enter string: ");
-
-	
-
-	int str_size = 100;
-
-	char* new_string = (char*) malloc(str_size * sizeof(char)); 		
-
-
-
-	scanf("%99[^\n]", new_string);
-
-	//printf("\n%s\n", new_string);
-
-	
-
-	char** tokens = tokenize(new_string);
-
-	int len = count_tokens(new_string);
-
-	print_all_tokens(tokens, len);
-
-	
-
-
-
-	return 0;	
-
-}*/
-
 
