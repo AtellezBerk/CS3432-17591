@@ -24,7 +24,9 @@ void write_read_demo();
 
 bool compare(char* str1, char* str2);
 
+int get_length(char* str);
 
+char* get_new_string(char* str);
 
 
 
@@ -68,18 +70,34 @@ void init_regs(){
 
 bool interpret(char* instr){
 
-	char** tokens = tokenize(instr);
-	//int len = count_tokens(instr);
+	char** tokens = tokenize(instr, ' ');
+	int len = count_tokens(instr, ' ');
 	//print_all_tokens(tokens, len);
 
+	//char* mem_file = "mem.txt";
+	//int token_length = 0;
+	int i;
+	//int j;
+	
 	if(compare(tokens[0], "LW")){
+		char word[10];
+		//Traverse the tokens start from 2nd token
+		for(i = 1; i < len; i++){
+			if(*tokens[i] == 'X'){
+				*word = get_new_string(tokens[i]); //Remove X from word
+				printf("%s\n", word);
+			}
+			else{
+				printf("%s\n", tokens[i]); //in case of 8(x22)
+			}
+		}
 		return true;
 	}
 	else if(compare(tokens[0], "SW")){
+		
 		return true;
-
 	}
-	if(compare(tokens[0], "ADD")){
+	else if(compare(tokens[0], "ADD")){
 		return true;
 	}
 	else if(compare(tokens[0], "ADDI")){
@@ -90,9 +108,23 @@ bool interpret(char* instr){
 
 }
 
+char* get_new_string(char* str){
+	int len = get_length(str) - 1;
+	char word[len-1];
+	int i;
+	int j = 1;
+	for(i = 0; i < len; i++){
+		word[i] = str[j];
+		j++;
+	} 
+	return *word;
+
+}
+
 bool compare(char* str1, char* str2){
-	int len1 = strlen(str1);
-	int len2 = strlen(str2);
+	int len1 = get_length(str1);
+	int len2 = get_length(str2);
+	
 
 	if(len1 != len2){
 		return false;
@@ -109,7 +141,13 @@ bool compare(char* str1, char* str2){
 
 }
 
-
+int get_length(char* str){
+	int i = 0;
+	while(str[i] != '\0'){
+		i++;
+	}
+	return i;
+}
 
 
 /**
@@ -138,13 +176,13 @@ void write_read_demo(){
 
 	int32_t write = write_address(data_to_write, address, mem_file);
 
-	if(write == (int32_t) NULL)
-		printf("ERROR: Unsucessful write to address %0X\n", 0x40);
+	//if(write == (int32_t) NULL)
+	//	printf("ERROR: Unsucessful write to address %0X\n", 0x40);
 	int32_t read = read_address(address, mem_file);
 
 
 
-	printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read); // %lu -> format as an long-unsigned
+	//printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read); // %lu -> format as an long-unsigned
 
 }
 

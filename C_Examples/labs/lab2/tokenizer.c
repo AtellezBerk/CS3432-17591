@@ -8,9 +8,9 @@
 
    Zero terminators are not printable (therefore false) */
 
-bool delim_character(char c){
+bool delim_character(char c, char s){
 
-	if(c == ' ' || c == '\t'){
+	if(c == s){
 
 		return true;
 
@@ -28,9 +28,9 @@ bool delim_character(char c){
 
 
 
-bool non_delim_character(char c){
+bool non_delim_character(char c, char s){
 
-	if(!delim_character(c)){
+	if(!delim_character(c, s)){
 
 		return true;
 
@@ -44,11 +44,11 @@ bool non_delim_character(char c){
 
 
 
-char *word_start(char* str){
+char *word_start(char* str, char s){
 
 	
 
-	while(*str != '\0' && non_delim_character(*str)){ //checks for end or space
+	while(*str != '\0' && non_delim_character(*str, s)){ //checks for end or separator
 
 		*str++;
 
@@ -71,9 +71,9 @@ terminated string*/
 
 
 
-char *end_word(char* str){
+char *end_word(char* str, char s){
 
-	while(*str != '\0' && non_delim_character(*str)){
+	while(*str != '\0' && non_delim_character(*str, s)){
 
 		*str++;
 
@@ -93,7 +93,7 @@ char *end_word(char* str){
 
 
 
-int count_tokens(char* str){
+int count_tokens(char* str, char s){
 
 	int counter = 0;
 
@@ -105,7 +105,7 @@ int count_tokens(char* str){
 
 	for(*str; *str != '\0'; *str++){
 
-		if(delim_character(*str)){
+		if(delim_character(*str, s)){
 
 			if(*str+1 != '\0'){
 
@@ -148,9 +148,9 @@ char *copy_str(char *inStr, short len){
 
 
 
-char** tokenize(char* str){	
+char** tokenize(char* str, char separator){	
 
-	int len = count_tokens(str);
+	int len = count_tokens(str, separator);
 
 	char** tokens = (char**) malloc(len * sizeof(char*));
 
@@ -158,7 +158,7 @@ char** tokenize(char* str){
 
 	
 
-	char* end = end_word(start);
+	char* end = end_word(start, separator);
 
 
 
@@ -168,9 +168,9 @@ char** tokenize(char* str){
 
 		tokens[i] = copy_str(start, end-start);
 
-		start = word_start(end);
+		start = word_start(end, separator);
 
-		end = end_word(start);
+		end = end_word(start, separator);
 
 		
 
