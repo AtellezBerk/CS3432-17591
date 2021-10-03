@@ -151,7 +151,7 @@ char *copy_str(char *inStr, short len){
 char** tokenize(char* str, char separator){	
 
 	int len = count_tokens(str, separator);
-
+		
 	char** tokens = (char**) malloc(len * sizeof(char*));
 
 	char* start = str;
@@ -159,7 +159,6 @@ char** tokenize(char* str, char separator){
 	
 
 	char* end = end_word(start, separator);
-
 
 
 	for(int i = 0; i < len; i++){
@@ -175,6 +174,7 @@ char** tokenize(char* str, char separator){
 		
 
 	}
+	
 
 	
 

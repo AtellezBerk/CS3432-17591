@@ -78,7 +78,9 @@ bool interpret(char* instr){
 	//int token_length = 0;
 	int i;
 	//int j;
-	
+	char** paren_word;	
+	char* ptr;	
+
 	if(compare(tokens[0], "LW")){
 		char word[10];
 		//Traverse the tokens start from 2nd token
@@ -88,7 +90,9 @@ bool interpret(char* instr){
 				printf("%s\n", word);
 			}
 			else{
-				printf("%s\n", tokens[i]); //in case of 8(x22)
+				printf("%s\n", tokens[i]); //in case of 8(X22)
+				paren_word = tokenize(tokens[i], '(');
+				print_all_tokens(paren_word, 2);
 			}
 		}
 		return true;
@@ -110,7 +114,7 @@ bool interpret(char* instr){
 
 char* get_new_string(char* str){
 	int len = get_length(str) - 1;
-	char word[len-1];
+	char word[len];
 	int i;
 	int j = 1;
 	for(i = 0; i < len; i++){
@@ -119,6 +123,19 @@ char* get_new_string(char* str){
 	} 
 	return *word;
 
+}
+
+char* get_new_string_has_paren(char* str){
+	int len = get_length(str) - 2;
+	char word[len];
+	int i;
+	int j = 1;
+	for(i = 0; i < len; i++){
+		word[i] = str[j];
+		j++;
+	}
+	return *word;
+	
 }
 
 bool compare(char* str1, char* str2){
