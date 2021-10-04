@@ -121,7 +121,9 @@ char** tokenize(char* str, char separator){
 	char* end = end_word(start, separator);
 	for(int i = 0; i < len; i++){
 		tokens[i] = copy_str(start, end-start);
-		printf("%s ", tokens[i]);
+			
+		//printf("%s %d\n", tokens[i], end-start);
+		
 		start = word_start(end, separator);
 		end = end_word(start, separator);
 	}

@@ -47,7 +47,7 @@ void init_regs(){
 	int reg_amount = 32;
 
 	reg = malloc(reg_amount * sizeof(int32_t)); // 32 * 4 bytes
-
+	
 	for(int i = 0; i < 32; i++)
 
 		reg[i] = i;
@@ -85,10 +85,10 @@ bool interpret(char* instr){
 	int32_t data_to_write;
 	int32_t address;
 	char* mem_file = "mem.txt";
-	int32_t write;
+	//int32_t write;
 	int32_t read = 0;
 	char word[10];
-
+	
 	if(compare(tokens[0], "LW") || compare(tokens[0], "SW")){
 		//char word[10];
 		
@@ -98,7 +98,7 @@ bool interpret(char* instr){
 				
 				*word = get_new_string(tokens[i]); //Remove X
 				temp_word[i-1] = atoi(word);
-				temp_word[i-1] *= 4;
+				
 			}
 			else{
 				////in case of 8(X22) separate with parenthesis
@@ -108,37 +108,30 @@ bool interpret(char* instr){
 				temp_word[i-1] = atoi(paren_word[0]);
 				temp = atoi(word); 
 				
-				temp_word[i-1] += (temp * 4);
+				temp_word[i-1] += temp;
 				//printf("%s %s\n", paren_word[0], word2);
 			}
 		}
 		if(compare(tokens[0], "LW")){
-			//LW rd, imm(rs1) | x5 = Memory[x6 + 0]
-			//LW x5  50(x6)
+			//LW rd, imm(rs1) | x5 = Memory[x6 + 0]	
+			data_to_write = (int32_t)temp_word[1];
 	
-			//data_to_write = read_address((int32_t)temp_word[1], mem_file);
-			address = (int32_t)temp_word[0];
-			//write = write_address(data_to_write, address, mem_file);
-			if(write == (int32_t) NULL)
-				printf("Error: Unsuccessful write to address %0X\n", 0x40);
-			 
-			read = read_address(address, mem_file);
+			//printf("%d\n", temp_word[0]); 
+			read = read_address(data_to_write, mem_file);
 			reg[temp_word[0]] = read;
 		}
 		else{
 			//SW x5, 40(x6) | Memory[x6 + 40] = x5
-			//data_to_write = read_address((int32_t)temp_word[0], mem_file);
+			data_to_write = (int32_t)temp_word[0];
 			address = (int32_t)temp_word[1];
-			write = write_address(data_to_write, address, mem_file);
-			if(write == (int32_t) NULL)
-				printf("Error: Unsuccessful write to address %0X\n", 0x40);
-			//read = read_address(address, mem_file);
+			write_address(data_to_write, address, mem_file);
 			
-			//reg[temp_word[1]] = read;
+			//if(write == (int32_t) NULL)
+				//printf("Error: Unsuccessful write to address %0X\n", 0x40);
 			
 		}
-		printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read);
-			
+		//printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read);
+		
 		return true;
 	}
 	else if(compare(tokens[0], "ADD") || compare(tokens[0], "ADDI")){
@@ -146,7 +139,7 @@ bool interpret(char* instr){
 		for(i = 1; i < len; i++){
 
 			if(*tokens[i] == 'X'){
-				*word = (char*) get_new_string(tokens[i]);
+				*word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
 				//temp_word[i-1] *= 4;
 			}
@@ -156,25 +149,15 @@ bool interpret(char* instr){
 		
 		}
 		
-		//ADD and ADDI are the same at this point	
-		//data_to_write = read_address((int32_t)temp_word[1], mem_file);
-		//data_to_write += read_address((int32_t)temp_word[2], mem_file);
 		if(compare(tokens[0], "ADD")){
-			printf("%d\n", reg[temp_word[0]]);
+			//printf("%d\n", reg[temp_word[0]]);
 			reg[temp_word[0]] = reg[temp_word[1]] + reg[temp_word[2]];
 
 		}
 		else{
 			reg[temp_word[0]] = reg[temp_word[1]] + temp_word[2];
 		}
-		//printf("%lu\n", data_to_write);
-		//address = (int32_t)temp_word[0];
-		//write_address(data_to_write, address, mem_file);
-		//if(write == (int32_t) NULL)
-		//	print("Error: Unsuccessful write to address %0X\n", 0x40);
-		//read_address(address, mem_file);
-
-		//printf("Read address %lu (0x%lX): %lu (0x%lX)\n",address,address,read,read);	
+			
 
 		return true;
 	}
@@ -183,7 +166,7 @@ bool interpret(char* instr){
 			if(*tokens[i] == 'X'){
 				*word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
-				temp_word[i-1] *= 4;
+				
 
 			}
 			else{
@@ -191,19 +174,19 @@ bool interpret(char* instr){
 			}
 		}
 		if(compare(tokens[0], "AND")){
-			//data_to_write = read_address((int32_t)temp_word[1], mem_file) & read_address((int32_t)temp_word[2], mem_file);
 			
-		}
-		else if(compare(tokens[0], "OR")){
-			//data_to_write = read_address((int32_t)temp_word[1], mem_file) | read_address((int32_t)temp_word[2], mem_file);
-			
-		}
-		else if(compare(tokens[0], "XOR")){
-			//data_to_write = read_address((int32_t)temp_word[1], mem_file) ^ read_address((int32_t)temp_word[2], mem_file);
+			reg[temp_word[0]] = (int32_t)temp_word[1] & (int32_t)temp_word[1];
 		
 		}
-		//address = (int32_t)temp_word[0];
-		//write_address(data_to_write, address, mem_file);
+		else if(compare(tokens[0], "OR")){
+			reg[temp_word[0]] = (int32_t)temp_word[1] | (int32_t)temp_word[1];
+		}
+		else if(compare(tokens[0], "XOR")){
+			reg[temp_word[0]] = (int32_t)temp_word[1] ^ (int32_t)temp_word[1];
+		
+		}
+		
+		reg[temp_word[0]] = (int)reg[temp_word[0]];
 		return true;
 	}
 
@@ -225,7 +208,7 @@ char* get_new_string(char* str){
 
 }
 
-//Example will receive X29)
+//Example will receive X29) so I will remove X and )
 char* get_new_string_has_paren(char* str){
 	int len = get_length(str) - 2;
 	char word[len];
@@ -339,7 +322,7 @@ int main(){
 	//is_null = fgets(input, 1000, stdin) == NULL;
 
 	while(fgets(input, 1000, stdin) != NULL){
-			if(interpret(input)){
+		if(interpret(input)){
 			printf("\n");
 			print_regs();
 			printf("\n");		
