@@ -11,9 +11,7 @@
 bool delim_character(char c, char s){
 
 	if(c == s){
-
 		return true;
-
 	}
 
 	return false;
@@ -31,9 +29,7 @@ bool delim_character(char c, char s){
 bool non_delim_character(char c, char s){
 
 	if(!delim_character(c, s)){
-
 		return true;
-
 	}
 
 	return false;
@@ -44,20 +40,13 @@ bool non_delim_character(char c, char s){
 
 
 
-char *word_start(char* str, char s){
-
-	
-
+char *word_start(char* str, char s){	
 	while(*str != '\0' && non_delim_character(*str, s)){ //checks for end or separator
-
 		*str++;
-
 	}
 
 	if(*str != '\0'){
-
 		*str++;
-
 	}
 
 	return str;
@@ -72,51 +61,30 @@ terminated string*/
 
 
 char *end_word(char* str, char s){
-
 	while(*str != '\0' && non_delim_character(*str, s)){
-
 		*str++;
-
 	}
 
 	return str;
-
-
-
-
-
 }
 
 
 
 // counts the number of words or tokens
-
-
-
 int count_tokens(char* str, char s){
-
 	int counter = 0;
-
 	if(*str == '\0')
-
 		return 0;
-
 	counter++;
-
-	for(*str; *str != '\0'; *str++){
-
+	while(*str != '\0'){
+		*str++;
 		if(delim_character(*str, s)){
 
 			if(*str+1 != '\0'){
-
 				counter++;
-
 			}
-
-		}			
-
-
-
+		}	
+				
 	}
 
 	return counter;
@@ -131,11 +99,9 @@ char *copy_str(char *inStr, short len){
 	for(int i = 0; i < len; i++){
 
 		word[i] = *inStr;
-
 		*inStr++;
 
 	}
-
 	//printf("Word: %s\n", word);
 
 	return word;
@@ -149,37 +115,18 @@ char *copy_str(char *inStr, short len){
 
 
 char** tokenize(char* str, char separator){	
-
 	int len = count_tokens(str, separator);
-		
 	char** tokens = (char**) malloc(len * sizeof(char*));
-
 	char* start = str;
-
-	
-
 	char* end = end_word(start, separator);
-
-
 	for(int i = 0; i < len; i++){
-
-		
-
 		tokens[i] = copy_str(start, end-start);
-
+		printf("%s ", tokens[i]);
 		start = word_start(end, separator);
-
 		end = end_word(start, separator);
-
-		
-
 	}
-	
 
 	
-
-
-
 	return tokens;
 
 }
@@ -190,8 +137,18 @@ void print_all_tokens(char** tokens, int len){
 		printf("Token[%d] = %s\n", i, tokens[i]);
 
 	}
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

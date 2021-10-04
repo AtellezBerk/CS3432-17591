@@ -28,6 +28,8 @@ int get_length(char* str);
 
 char* get_new_string(char* str);
 
+char* get_new_string_has_paren(char* str);
+
 
 
 /**
@@ -69,44 +71,100 @@ void init_regs(){
  */
 
 bool interpret(char* instr){
-
+	printf("%s\n", instr);
 	char** tokens = tokenize(instr, ' ');
 	int len = count_tokens(instr, ' ');
-	//print_all_tokens(tokens, len);
+	
+	print_all_tokens(tokens, len);
 
-	//char* mem_file = "mem.txt";
-	//int token_length = 0;
 	int i;
-	//int j;
-	char** paren_word;	
-	char* ptr;	
+	char** paren_word;
+	int temp;
+	int temp_word[3] = {0, 0, 0};	
 
-	if(compare(tokens[0], "LW")){
-		char word[10];
-		//Traverse the tokens start from 2nd token
+	int32_t data_to_write;
+	int32_t address;
+	char* mem_file = "mem.txt";
+	int32_t write;
+	int32_t read = 0;
+	char word[10];
+
+	if(compare(tokens[0], "LW") || compare(tokens[0], "SW")){
+		//char word[10];
+		
+		//Traverse the tokens etart from 2nd token
 		for(i = 1; i < len; i++){
 			if(*tokens[i] == 'X'){
-				*word = get_new_string(tokens[i]); //Remove X from word
-				printf("%s\n", word);
+				
+				*word = get_new_string(tokens[i]); //Remove X
+				temp_word[i-1] = atoi(word);
+				temp_word[i-1] *= 4;
 			}
 			else{
-				printf("%s\n", tokens[i]); //in case of 8(X22)
+				////in case of 8(X22) separate with parenthesis
 				paren_word = tokenize(tokens[i], '(');
-				print_all_tokens(paren_word, 2);
+				//print_all_tokens(paren_word, 2);
+				*word = get_new_string_has_paren(paren_word[1]);
+				temp_word[i-1] = atoi(paren_word[0]);
+				temp = atoi(word); 
+				
+				temp_word[i-1] += (temp * 4);
+				//printf("%s %s\n", paren_word[0], word2);
 			}
 		}
+		if(compare(tokens[0], "LW")){
+			//LW rd, imm(rs1) | x5 = Memory[x6 + 40]
+			data_to_write = (int32_t)temp_word[1];
+			address = (int32_t)temp_word[0];
+			write = write_address(data_to_write, address, mem_file);
+			//if(write == (int32_t) NULL)
+			//	printf("Error: Unsuccessful write to address %0X\n", 0x40);
+			read = read_address(address, mem_file);
+			
+		}
+		else{
+			//SW x5, 40(x6) | Memory[x6 + 40] = x5
+			data_to_write = read_address((int32_t)temp_word[0], mem_file);
+			address = (int32_t)temp_word[1];
+			write_address(data_to_write, address, mem_file);
+			//if(write == (int32_t) NULL)
+			//	printf("Error: Unsuccessful write to address %0X\n", 0x40);
+			//read = read_address(address, mem_file);
+			
+		}
+		printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read);
+			
 		return true;
 	}
-	else if(compare(tokens[0], "SW")){
+	else if(compare(tokens[0], "ADD") || compare(tokens[0], "ADDI")){
 		
+		for(i = 1; i < len; i++){
+			printf("%c\n", *tokens[i]);
+			if(*tokens[i] == 'X'){
+				*word = (char*) get_new_string(tokens[i]);
+				temp_word[i-1] = atoi(word);
+				temp_word[i-1] *= 4;
+			}
+			else{
+				temp_word[i-1] = atoi(tokens[i]);
+			}
+			printf("%d\n", temp_word[i-1]);
+		}
+		
+		//ADD and ADDI are the same at this point	
+		temp_word[1] += temp_word[2];
+		data_to_write = (int32_t)temp_word[1];
+		address = (int32_t)temp_word[0];
+		write_address(data_to_write, address, mem_file);
+		//if(write == (int32_t) NULL)
+		//	print("Error: Unsuccessful write to address %0X\n", 0x40);
+		read_address(address, mem_file);
+
+		printf("Read address %lu (0x%lX): %lu (0x%lX)\n",address,address,read,read);	
+
 		return true;
 	}
-	else if(compare(tokens[0], "ADD")){
-		return true;
-	}
-	else if(compare(tokens[0], "ADDI")){
-		return true;
-	}
+
 	
 	return false;
 
@@ -120,11 +178,12 @@ char* get_new_string(char* str){
 	for(i = 0; i < len; i++){
 		word[i] = str[j];
 		j++;
-	} 
+	}
 	return *word;
 
 }
 
+//Example will receive X29)
 char* get_new_string_has_paren(char* str){
 	int len = get_length(str) - 2;
 	char word[len];
@@ -181,21 +240,21 @@ int get_length(char* str){
 
 void write_read_demo(){
 
-	int32_t data_to_write = 0xFFF; // equal to 4095
+	//int32_t data_to_write = 0xFFF; // equal to 4095
 
-	int32_t address = 0x98; // equal to 152
+	//int32_t address = 5; // equal to 152
 
-	char* mem_file = "mem.txt";
+	//char* mem_file = "mem.txt";
 
 
 
 	// Write 4095 (or "0000000 00000FFF") in the 20th address (address 152 == 0x98)
 
-	int32_t write = write_address(data_to_write, address, mem_file);
+	//int32_t write = write_address(data_to_write, address, mem_file);
 
 	//if(write == (int32_t) NULL)
 	//	printf("ERROR: Unsucessful write to address %0X\n", 0x40);
-	int32_t read = read_address(address, mem_file);
+	//int32_t read = read_address(address, mem_file);
 
 
 
@@ -204,41 +263,53 @@ void write_read_demo(){
 }
 
 
-
 /**
-
  * Your code goes in the main
-
  *
-
  */
+void print_regs(){
+	int col_size = 10;
+	for(int i = 0; i < 8; i++){
+		printf("X%02i:%.*lld", i, col_size, (long long int) reg[i]);
+		printf(" X%02i:%.*lld", i+8, col_size, (long long int) reg[i+8]);
+		printf(" X%02i:%.*lld", i+16, col_size, (long long int) reg[i+16]);
+		printf(" X%02i:%.*lld\n", i+24, col_size, (long long int) reg[i+24]);
+
+	}
+}
 
 int main(){
 
 	// Do not write any code between init_regs
-
 	init_regs(); // DO NOT REMOVE THIS LINE
-
-
-
+	print_regs();
 	// Below is a sample program to a write-read. Overwrite this with your own code.
-
 	//write_read_demo();
+	//print_regs();
 	
-	printf("Input text into input.txt and separate words by spaces\n");
+	printf("RV32 Interpreter.\nType RV32 instructions. Use upper-case letters and space as a delimiter.\nEnter 'EOF' character to end program\n");
+	printf("Input text into input.txt and separate words by spaces and immediates in memory with parenthesis\n");
+	printf("Sample: LW X5 40(X6) or ADDI X5 X6 20\n\n");
 	
-	//char input[100];
-	char* input = (char*) malloc(100 * sizeof(char));
-	//fgets(input, 100, stdin)
-	//scanf("%99[^\n]", input)
-	while(fgets(input, 100, stdin) != NULL){
-		if(interpret(input)){
-			printf("Valid\n");
+
+	char* input = (char*)malloc(1000 * sizeof(char));
+	//bool is_null = false;
+	//is_null = fgets(input, 1000, stdin) == NULL;
+
+	while(fgets(input, 1000, stdin) != NULL){
+			if(interpret(input)){
+			printf("\n");
+			print_regs();
+			printf("\n");		
 		}
+		else{
+			printf("Invalid command\n");
+		}
+		//is_null = fgets(input, 1000, stdin) == NULL;
 	}
 
 	
-	printf("Print Something\n");
+	printf("Thank you\n");
 
 
 	return 0;
