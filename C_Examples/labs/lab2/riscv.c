@@ -113,23 +113,28 @@ bool interpret(char* instr){
 			}
 		}
 		if(compare(tokens[0], "LW")){
-			//LW rd, imm(rs1) | x5 = Memory[x6 + 40]
-			data_to_write = read_address((int32_t)temp_word[1], mem_file);
+			//LW rd, imm(rs1) | x5 = Memory[x6 + 0]
+			//LW x5  50(x6)
+	
+			//data_to_write = read_address((int32_t)temp_word[1], mem_file);
 			address = (int32_t)temp_word[0];
-			write = write_address(data_to_write, address, mem_file);
+			//write = write_address(data_to_write, address, mem_file);
 			if(write == (int32_t) NULL)
 				printf("Error: Unsuccessful write to address %0X\n", 0x40);
+			 
 			read = read_address(address, mem_file);
-			
+			reg[temp_word[0]] = read;
 		}
 		else{
 			//SW x5, 40(x6) | Memory[x6 + 40] = x5
-			data_to_write = read_address((int32_t)temp_word[0], mem_file);
+			//data_to_write = read_address((int32_t)temp_word[0], mem_file);
 			address = (int32_t)temp_word[1];
 			write = write_address(data_to_write, address, mem_file);
 			if(write == (int32_t) NULL)
 				printf("Error: Unsuccessful write to address %0X\n", 0x40);
-			read = read_address(address, mem_file);
+			//read = read_address(address, mem_file);
+			
+			//reg[temp_word[1]] = read;
 			
 		}
 		printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read);
@@ -143,7 +148,7 @@ bool interpret(char* instr){
 			if(*tokens[i] == 'X'){
 				*word = (char*) get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
-				temp_word[i-1] *= 4;
+				//temp_word[i-1] *= 4;
 			}
 			else{
 				temp_word[i-1] = atoi(tokens[i]);
@@ -152,15 +157,22 @@ bool interpret(char* instr){
 		}
 		
 		//ADD and ADDI are the same at this point	
-		data_to_write = read_address((int32_t)temp_word[1], mem_file);
-		data_to_write += read_address((int32_t)temp_word[2], mem_file);
+		//data_to_write = read_address((int32_t)temp_word[1], mem_file);
+		//data_to_write += read_address((int32_t)temp_word[2], mem_file);
+		if(compare(tokens[0], "ADD")){
+			printf("%d\n", reg[temp_word[0]]);
+			reg[temp_word[0]] = reg[temp_word[1]] + reg[temp_word[2]];
 
+		}
+		else{
+			reg[temp_word[0]] = reg[temp_word[1]] + temp_word[2];
+		}
 		//printf("%lu\n", data_to_write);
-		address = (int32_t)temp_word[0];
-		write_address(data_to_write, address, mem_file);
+		//address = (int32_t)temp_word[0];
+		//write_address(data_to_write, address, mem_file);
 		//if(write == (int32_t) NULL)
 		//	print("Error: Unsuccessful write to address %0X\n", 0x40);
-		read_address(address, mem_file);
+		//read_address(address, mem_file);
 
 		//printf("Read address %lu (0x%lX): %lu (0x%lX)\n",address,address,read,read);	
 
@@ -179,19 +191,19 @@ bool interpret(char* instr){
 			}
 		}
 		if(compare(tokens[0], "AND")){
-			data_to_write = read_address((int32_t)temp_word[1], mem_file) & read_address((int32_t)temp_word[2], mem_file);
+			//data_to_write = read_address((int32_t)temp_word[1], mem_file) & read_address((int32_t)temp_word[2], mem_file);
 			
 		}
 		else if(compare(tokens[0], "OR")){
-			data_to_write = read_address((int32_t)temp_word[1], mem_file) | read_address((int32_t)temp_word[2], mem_file);
+			//data_to_write = read_address((int32_t)temp_word[1], mem_file) | read_address((int32_t)temp_word[2], mem_file);
 			
 		}
 		else if(compare(tokens[0], "XOR")){
-			data_to_write = read_address((int32_t)temp_word[1], mem_file) ^ read_address((int32_t)temp_word[2], mem_file);
+			//data_to_write = read_address((int32_t)temp_word[1], mem_file) ^ read_address((int32_t)temp_word[2], mem_file);
 		
 		}
-		address = (int32_t)temp_word[0];
-		write_address(data_to_write, address, mem_file);
+		//address = (int32_t)temp_word[0];
+		//write_address(data_to_write, address, mem_file);
 		return true;
 	}
 
