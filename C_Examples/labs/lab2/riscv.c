@@ -85,13 +85,16 @@ bool interpret(char* instr){
 	int32_t data_to_write;
 	int32_t address;
 	char* mem_file = "mem.txt";
-	//int32_t write;
+	int32_t write;
 	int32_t read = 0;
 	char word[10];
 	
 	if(compare(tokens[0], "LW") || compare(tokens[0], "SW")){
-		//char word[10];
-		
+
+		if(len != 3){
+			return false;
+		}
+				
 		//Traverse the tokens etart from 2nd token
 		for(i = 1; i < len; i++){
 			if(*tokens[i] == 'X'){
@@ -124,10 +127,10 @@ bool interpret(char* instr){
 			//SW x5, 40(x6) | Memory[x6 + 40] = x5
 			data_to_write = (int32_t)temp_word[0];
 			address = (int32_t)temp_word[1];
-			write_address(data_to_write, address, mem_file);
+			write = write_address(data_to_write, address, mem_file);
 			
-			//if(write == (int32_t) NULL)
-				//printf("Error: Unsuccessful write to address %0X\n", 0x40);
+			if(write == (int32_t) NULL)
+				printf("Error: Unsuccessful write to address %0X\n", 0x40);
 			
 		}
 		//printf("Read address %lu (0x%lX): %lu (0x%lX)\n", address, address, read, read);
@@ -136,12 +139,16 @@ bool interpret(char* instr){
 	}
 	else if(compare(tokens[0], "ADD") || compare(tokens[0], "ADDI")){
 		
+		if(len != 4){
+			return false;
+		}
+		
 		for(i = 1; i < len; i++){
 
 			if(*tokens[i] == 'X'){
 				*word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
-				//temp_word[i-1] *= 4;
+				
 			}
 			else{
 				temp_word[i-1] = atoi(tokens[i]);
@@ -162,6 +169,10 @@ bool interpret(char* instr){
 		return true;
 	}
 	else if(compare(tokens[0],"AND") || compare(tokens[0],"OR")||compare(tokens[0],"XOR")){
+		if(len != 4){
+			return 4;
+		}
+
 		for(i = 1; i < len; i++){
 			if(*tokens[i] == 'X'){
 				*word = get_new_string(tokens[i]);
@@ -314,7 +325,7 @@ int main(){
 	
 	printf("RV32 Interpreter.\nType RV32 instructions. Use upper-case letters and space as a delimiter.\nEnter 'EOF' character to end program\n");
 	printf("Input text into input.txt and separate words by spaces and immediates in memory with parenthesis\n");
-	printf("Sample: LW X5 40(X6) or ADDI X5 X6 20\n\n");
+	printf("Sample: LW X5 40(X6) or ADDI X5 X6 20 (Immediates in base 10 and everything must be uppercase)\n\n");
 	
 
 	char* input = (char*)malloc(1000 * sizeof(char));
