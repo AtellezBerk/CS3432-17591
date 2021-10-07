@@ -9,7 +9,6 @@
 #include <stdbool.h>
 
 
-
 #define MAX_32bit 4294967295; // 32 bits of all 1s
 
 
@@ -47,11 +46,8 @@ int32_t read_address(int32_t address, char* file_name){
 				hex_str[i] = str[12+i];
 		}
 		if(line >= line_address || line_str == NULL){
-
 			done_searching = true;
-
 			break;
-
 		}
 
 		line++;

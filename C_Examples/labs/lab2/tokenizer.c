@@ -8,7 +8,7 @@
 
    Zero terminators are not printable (therefore false) */
 
-bool delim_character(char c, char s){
+bool delim_character(char c, const char s){
 
 	if(c == s){
 		return true;
@@ -26,7 +26,7 @@ bool delim_character(char c, char s){
 
 
 
-bool non_delim_character(char c, char s){
+bool non_delim_character(char c, const char s){
 
 	if(!delim_character(c, s)){
 		return true;
@@ -40,13 +40,13 @@ bool non_delim_character(char c, char s){
 
 
 
-char *word_start(char* str, char s){	
+char *word_start(char* str, const char s){	
 	while(*str != '\0' && non_delim_character(*str, s)){ //checks for end or separator
-		*str++;
+		str++;
 	}
 
 	if(*str != '\0'){
-		*str++;
+		str++;
 	}
 
 	return str;
@@ -60,9 +60,9 @@ terminated string*/
 
 
 
-char *end_word(char* str, char s){
+char *end_word(char* str, const char s){
 	while(*str != '\0' && non_delim_character(*str, s)){
-		*str++;
+		str++;
 	}
 
 	return str;
@@ -71,13 +71,13 @@ char *end_word(char* str, char s){
 
 
 // counts the number of words or tokens
-int count_tokens(char* str, char s){
+int count_tokens(char* str, const char s){
 	int counter = 0;
 	if(*str == '\0')
 		return 0;
 	counter++;
 	while(*str != '\0'){
-		*str++;
+		str++;
 		if(delim_character(*str, s)){
 
 			if(*str+1 != '\0'){
@@ -95,17 +95,17 @@ int count_tokens(char* str, char s){
 char *copy_str(char *inStr, short len){
 
 	char* word = (char*) malloc(len * sizeof(char*));
-
+	
 	for(int i = 0; i < len; i++){
-
+		
 		word[i] = *inStr;
-		*inStr++;
+		inStr++;
 
 	}
 	//printf("Word: %s\n", word);
+	word[len] = '\0';	
 
 	return word;
-
 }
 
 
@@ -114,7 +114,7 @@ char *copy_str(char *inStr, short len){
 
 
 
-char** tokenize(char* str, char separator){	
+char** tokenize(char* str, const char separator){	
 	int len = count_tokens(str, separator);
 	char** tokens = (char**) malloc(len * sizeof(char*));
 	char* start = str;

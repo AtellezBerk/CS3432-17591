@@ -73,7 +73,9 @@ void init_regs(){
 bool interpret(char* instr){
 	//printf("%s\n", instr);
 	char** tokens = tokenize(instr, ' ');
+	
 	int len = count_tokens(instr, ' ');
+	
 	
 	//print_all_tokens(tokens, len);
 
@@ -87,7 +89,7 @@ bool interpret(char* instr){
 	char* mem_file = "mem.txt";
 	int32_t write;
 	int32_t read = 0;
-	char word[10];
+	char* word = (char*) malloc(1000 * sizeof(char));
 	
 	if(compare(tokens[0], "LW") || compare(tokens[0], "SW")){
 
@@ -95,21 +97,30 @@ bool interpret(char* instr){
 			return false;
 		}
 				
-		//Traverse the tokens etart from 2nd token
+		//Traverse the tokens to remove X, start from 2nd token
 		for(i = 1; i < len; i++){
 			if(*tokens[i] == 'X'){
 				
-				*word = get_new_string(tokens[i]); //Remove X
+				word = get_new_string(tokens[i]); //Remove X
 				temp_word[i-1] = atoi(word);
 				
 			}
 			else{
-				////in case of 8(X22) separate with parenthesis
+				////For cases like 8(X22) separate with parenthesis
 				paren_word = tokenize(tokens[i], '(');
-				//print_all_tokens(paren_word, 2);
-				*word = get_new_string_has_paren(paren_word[1]);
+			
+
+				//print_all_tokens(paren_word, 2); //debugger
+				word = get_new_string_has_paren(paren_word[1]);
 				temp_word[i-1] = atoi(paren_word[0]);
+				
 				temp = atoi(word); 
+				
+				//printf("%s\n", word);//debugger
+				//printf("%d\n", temp);// debugger
+			
+				//Have to move value by 4
+				temp *= 4;
 				
 				temp_word[i-1] += temp;
 				//printf("%s %s\n", paren_word[0], word2);
@@ -125,6 +136,7 @@ bool interpret(char* instr){
 		}
 		else{
 			//SW x5, 40(x6) | Memory[x6 + 40] = x5
+			//printf("%d\n", temp_word[1]);
 			data_to_write = (int32_t)temp_word[0];
 			address = (int32_t)temp_word[1];
 			write = write_address(data_to_write, address, mem_file);
@@ -146,7 +158,7 @@ bool interpret(char* instr){
 		for(i = 1; i < len; i++){
 
 			if(*tokens[i] == 'X'){
-				*word = get_new_string(tokens[i]);
+				word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
 				
 			}
@@ -175,7 +187,7 @@ bool interpret(char* instr){
 
 		for(i = 1; i < len; i++){
 			if(*tokens[i] == 'X'){
-				*word = get_new_string(tokens[i]);
+				word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
 				
 
@@ -208,28 +220,28 @@ bool interpret(char* instr){
 
 char* get_new_string(char* str){
 	int len = get_length(str) - 1;
-	char word[len];
+	char* word = (char*)malloc(len * sizeof(char));
 	int i;
 	int j = 1;
 	for(i = 0; i < len; i++){
 		word[i] = str[j];
 		j++;
 	}
-	return *word;
+	return word;
 
 }
 
 //Example will receive X29) so I will remove X and )
 char* get_new_string_has_paren(char* str){
 	int len = get_length(str) - 2;
-	char word[len];
+	char* word = (char*)malloc(len * sizeof(char));
 	int i;
 	int j = 1;
 	for(i = 0; i < len; i++){
 		word[i] = str[j];
 		j++;
 	}
-	return *word;
+	return word;
 	
 }
 
@@ -324,15 +336,17 @@ int main(){
 	//print_regs();
 	
 	printf("RV32 Interpreter.\nType RV32 instructions. Use upper-case letters and space as a delimiter.\nEnter 'EOF' character to end program\n");
-	printf("Input text into input.txt and separate words by spaces and immediates in memory with parenthesis\n");
+	printf("Input text into input.txt or run the program manually, and separate words by spaces and immediates in memory with parenthesis\n\n");
 	printf("Sample: LW X5 40(X6) or ADDI X5 X6 20 (Immediates in base 10 and everything must be uppercase)\n\n");
 	
 
 	char* input = (char*)malloc(1000 * sizeof(char));
+	
 	//bool is_null = false;
 	//is_null = fgets(input, 1000, stdin) == NULL;
-
-	while(fgets(input, 1000, stdin) != NULL){
+	
+	
+	while(fgets(input, 1000, stdin)){
 		if(interpret(input)){
 			printf("\n");
 			print_regs();
@@ -341,7 +355,7 @@ int main(){
 		else{
 			printf("Invalid command\n");
 		}
-		//is_null = fgets(input, 1000, stdin) == NULL;
+		
 	}
 
 	
