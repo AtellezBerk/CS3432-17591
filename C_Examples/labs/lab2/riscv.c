@@ -160,7 +160,7 @@ bool interpret(char* instr){
 			if(*tokens[i] == 'X'){
 				word = get_new_string(tokens[i]);
 				temp_word[i-1] = atoi(word);
-				
+				//printf("tokens[i]: %s word: %s temp_word[i-1]: %d \n",tokens[i], word, temp_word[i-1]);	
 			}
 			else{
 				temp_word[i-1] = atoi(tokens[i]);
@@ -175,6 +175,7 @@ bool interpret(char* instr){
 		}
 		else{
 			reg[temp_word[0]] = reg[temp_word[1]] + temp_word[2];
+			
 		}
 			
 
@@ -198,18 +199,17 @@ bool interpret(char* instr){
 		}
 		if(compare(tokens[0], "AND")){
 			
-			reg[temp_word[0]] = (int32_t)temp_word[1] & (int32_t)temp_word[1];
+			reg[temp_word[0]] = reg[temp_word[1]] & reg[temp_word[2]];
 		
 		}
 		else if(compare(tokens[0], "OR")){
-			reg[temp_word[0]] = (int32_t)temp_word[1] | (int32_t)temp_word[1];
+			reg[temp_word[0]] = reg[temp_word[1]] | reg[temp_word[2]];
 		}
 		else if(compare(tokens[0], "XOR")){
-			reg[temp_word[0]] = (int32_t)temp_word[1] ^ (int32_t)temp_word[1];
+			reg[temp_word[0]] = reg[temp_word[1]] ^ reg[temp_word[2]];
 		
 		}
 		
-		reg[temp_word[0]] = (int)reg[temp_word[0]];
 		return true;
 	}
 
@@ -227,6 +227,7 @@ char* get_new_string(char* str){
 		word[i] = str[j];
 		j++;
 	}
+	word[len] = '\0';
 	return word;
 
 }
@@ -241,6 +242,7 @@ char* get_new_string_has_paren(char* str){
 		word[i] = str[j];
 		j++;
 	}
+	word[len] = '\0';
 	return word;
 	
 }
